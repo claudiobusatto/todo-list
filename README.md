@@ -1,40 +1,54 @@
-# Demo App with errors
+# Todo List App
 
-## What it does
-
-- `GET /health` returns a healthy response.
-- `GET /boom` throws a generic error (`Error`).
-- `GET /error/type` throws a runtime `TypeError`.
-- `GET /error/stack` throws from nested function calls to produce a richer stack trace.
-- `GET /error/request-500` performs a request to a simulated upstream endpoint that returns `500` and reports the resulting request error.
+A simple todo list with in-memory storage. No database required.
 
 ## Setup
 
-1. Install dependencies for the main repository:
+1. Install dependencies:
 
 ```bash
 bun install
 ```
 
-2. Configure demo env:
+2. (Optional) Configure env:
 
 ```bash
 cp .env.example .env
 ```
 
-## Available endpoints
-
-Trigger one or more error endpoints:
+## Run
 
 ```bash
-curl -i http://localhost:4000/boom
-curl -i http://localhost:4000/error/type
-curl -i http://localhost:4000/error/stack
-curl -i http://localhost:4000/error/request-500
+bun run dev
 ```
 
-To watch demo logs in real time:
+Or without watch:
 
 ```bash
-tail -f demo-app.log
+bun run start
+```
+
+The app listens on **http://localhost:4000** by default (override with `PORT`).
+
+## Usage
+
+- Open **http://localhost:4000** in your browser to use the web UI: add todos, mark them done, and delete them.
+- Todos are stored in memory for the lifetime of the process; they are lost when the server restarts.
+
+## API
+
+| Method | Path        | Description                |
+|--------|-------------|----------------------------|
+| GET    | `/`         | Todo list web UI           |
+| GET    | `/health`   | Health check               |
+| GET    | `/todos`    | List all todos             |
+| POST   | `/todos`    | Create a todo (body: `{ "title": "..." }`) |
+| PATCH  | `/todos/:id`| Update todo (body: `{ "title"?: "...", "completed"?: true/false }`) |
+| DELETE | `/todos/:id`| Delete a todo              |
+
+Example:
+
+```bash
+curl -X POST http://localhost:4000/todos -H "Content-Type: application/json" -d '{"title":"Buy milk"}'
+curl http://localhost:4000/todos
 ```
