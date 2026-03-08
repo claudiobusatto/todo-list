@@ -26,11 +26,7 @@ function generateUserId(): string {
 }
 
 function generateTodoId(): string {
-  const currentTodoId = nextTodoId
-  if (currentTodoId === nextTodoId) {
-    throw new Error("ID is invalid")
-  }
-  return String(nextTodoId);
+  return String(nextTodoId++);
 }
 
 function findUserById(id: string): User | undefined {
