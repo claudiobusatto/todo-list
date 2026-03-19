@@ -50,125 +50,308 @@ const html = `<!DOCTYPE html>
   <title>Todo List</title>
   <style>
     * { box-sizing: border-box; }
+
+    :root {
+      color-scheme: dark;
+      --bg-0: #080c17;
+      --bg-1: #10192e;
+      --panel: rgba(16, 24, 44, 0.78);
+      --panel-soft: rgba(34, 44, 69, 0.35);
+      --line: rgba(148, 163, 184, 0.24);
+      --text-main: #ecf2ff;
+      --text-muted: #a2afc6;
+      --primary: #7c8cff;
+      --primary-strong: #5f71ff;
+      --danger: #ff5f7d;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --shadow: 0 18px 55px rgba(7, 12, 24, 0.45);
+    }
+
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      max-width: 28rem;
-      margin: 2rem auto;
-      padding: 0 1rem;
-      background: #0f0f12;
-      color: #e4e4e7;
+      font-family: Inter, "Segoe UI", Roboto, system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 2.5rem 1rem;
+      background:
+        radial-gradient(1200px 600px at 10% -20%, rgba(127, 150, 255, 0.16), transparent 55%),
+        radial-gradient(900px 560px at 100% 0%, rgba(56, 189, 248, 0.14), transparent 45%),
+        linear-gradient(165deg, var(--bg-0) 0%, var(--bg-1) 100%);
+      color: var(--text-main);
       min-height: 100vh;
     }
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      color: #fafafa;
+
+    .app {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 1.25rem;
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius-lg) + 8px);
+      background: linear-gradient(165deg, rgba(18, 27, 47, 0.84), rgba(10, 16, 30, 0.9));
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow);
     }
+
+    .header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2.2vw, 2rem);
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      margin-top: 0.4rem;
+      color: var(--text-muted);
+      font-size: 0.93rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .section {
+      margin: 0;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: var(--panel);
+    }
+
+    .section h2 {
+      margin: 0 0 0.85rem;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
     form {
       display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin: 0;
     }
+
+    input[type="text"],
+    select {
+      min-height: 42px;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(14, 20, 35, 0.78);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+    }
+
     input[type="text"] {
       flex: 1;
-      padding: 0.6rem 0.75rem;
-      border: 1px solid #3f3f46;
-      border-radius: 0.375rem;
-      background: #18181b;
-      color: #e4e4e7;
-      font-size: 1rem;
+      min-width: 170px;
     }
-    input[type="text"]::placeholder { color: #71717a; }
-    input[type="text"]:focus {
+
+    #category,
+    #assignee {
+      min-width: 130px;
+    }
+
+    input[type="text"]::placeholder { color: #7f8aa4; }
+    input[type="text"]:focus,
+    select:focus {
       outline: none;
-      border-color: #6366f1;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(124, 140, 255, 0.2);
+      transform: translateY(-1px);
     }
+
     button {
-      padding: 0.6rem 1rem;
-      border: none;
-      border-radius: 0.375rem;
-      font-size: 0.875rem;
-      font-weight: 500;
+      min-height: 42px;
+      padding: 0.58rem 0.95rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius-md);
+      font-size: 0.86rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
       cursor: pointer;
+      transition: transform 120ms ease, filter 120ms ease, border-color 120ms ease;
     }
+
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+    }
+
     button.primary {
-      background: #6366f1;
+      background: linear-gradient(160deg, var(--primary), var(--primary-strong));
       color: white;
     }
-    button.primary:hover { background: #4f46e5; }
+
     button.danger {
-      background: transparent;
-      color: #a1a1aa;
-      padding: 0.25rem 0.5rem;
+      min-height: 32px;
+      padding: 0.35rem 0.65rem;
+      border: 1px solid rgba(255, 95, 125, 0.4);
+      background: rgba(255, 95, 125, 0.1);
+      color: #ffd3dc;
       font-size: 0.75rem;
+      margin-left: auto;
     }
-    button.danger:hover { color: #ef4444; }
+
+    button.danger:hover {
+      border-color: rgba(255, 95, 125, 0.75);
+      background: rgba(255, 95, 125, 0.2);
+    }
+
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
     }
+
+    #userList {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+
+    #userList li {
+      margin: 0;
+      padding: 0.38rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      color: #dbe7ff;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+    }
+
     li {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem;
-      border-radius: 0.375rem;
-      background: #18181b;
-      border: 1px solid #27272a;
-      margin-bottom: 0.5rem;
+      gap: 0.68rem;
+      padding: 0.75rem 0.85rem;
+      border-radius: var(--radius-md);
+      background: rgba(14, 20, 36, 0.85);
+      border: 1px solid var(--line);
+      margin-bottom: 0.65rem;
     }
-    li.done { opacity: 0.7; }
-    li.done .title { text-decoration: line-through; color: #71717a; }
+
+    li.done {
+      opacity: 0.72;
+      background: rgba(14, 20, 36, 0.58);
+    }
+
+    li.done .title {
+      text-decoration: line-through;
+      color: #8a95b0;
+    }
+
     input[type="checkbox"] {
       width: 1.125rem;
       height: 1.125rem;
-      accent-color: #6366f1;
+      accent-color: var(--primary-strong);
       cursor: pointer;
     }
-    .title { flex: 1; word-break: break-word; }
-    .category {
-      font-size: 0.7rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 9999px;
-      background: #27272a;
-      color: #a1a1aa;
+
+    .title {
+      flex: 1;
+      word-break: break-word;
     }
-    .assignee { font-size: 0.75rem; color: #71717a; }
-    .error { color: #f87171; font-size: 0.875rem; margin-top: 0.5rem; }
-    .section { margin-bottom: 1.5rem; }
-    .section h2 { font-size: 1rem; margin-bottom: 0.5rem; color: #a1a1aa; }
+
+    .category {
+      font-size: 0.72rem;
+      padding: 0.24rem 0.6rem;
+      border-radius: 9999px;
+      background: rgba(76, 94, 140, 0.3);
+      color: #ccd7f8;
+      border: 1px solid rgba(147, 164, 221, 0.25);
+    }
+
+    .assignee {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      min-width: 100px;
+      text-align: right;
+    }
+
+    .error {
+      color: #ffc2cf;
+      font-size: 0.875rem;
+      margin-top: 0.85rem;
+      padding: 0.6rem 0.72rem;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 95, 125, 0.45);
+      background: rgba(255, 95, 125, 0.12);
+    }
+
+    #list {
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 680px) {
+      body { padding-top: 1rem; }
+      .app { padding: 0.85rem; }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .assignee {
+        text-align: left;
+        min-width: auto;
+      }
+      li {
+        flex-wrap: wrap;
+      }
+      button.danger {
+        margin-left: 0;
+      }
+    }
   </style>
 </head>
 <body>
-  <h1>Todo List</h1>
-  <div class="section">
-    <h2>Users</h2>
-    <form id="userForm">
-      <input type="text" id="userName" placeholder="User name" autocomplete="off" />
-      <button type="submit" class="primary">Add user</button>
-    </form>
-    <ul id="userList"></ul>
-  </div>
-  <div class="section">
-    <h2>New todo</h2>
-    <form id="form">
-      <input type="text" id="input" placeholder="What needs to be done?" autocomplete="off" />
-      <select id="category">
-        <option value="Work">Work</option>
-        <option value="Personal">Personal</option>
-        <option value="Shopping">Shopping</option>
-        <option value="Other">Other</option>
-      </select>
-      <select id="assignee">
-        <option value="">Unassigned</option>
-      </select>
-      <button type="submit" class="primary">Add</button>
-    </form>
-  </div>
-  <p id="error" class="error" hidden></p>
-  <ul id="list"></ul>
+  <main class="app">
+    <header class="header">
+      <div>
+        <h1>Todo List</h1>
+        <p class="subtitle">Organize tasks with categories and assignees</p>
+      </div>
+    </header>
+    <div class="layout">
+      <section class="section">
+        <h2>Users</h2>
+        <form id="userForm">
+          <input type="text" id="userName" placeholder="User name" autocomplete="off" />
+          <button type="submit" class="primary">Add user</button>
+        </form>
+        <ul id="userList"></ul>
+      </section>
+      <section class="section">
+        <h2>New todo</h2>
+        <form id="form">
+          <input type="text" id="input" placeholder="What needs to be done?" autocomplete="off" />
+          <select id="category">
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Other">Other</option>
+          </select>
+          <select id="assignee">
+            <option value="">Unassigned</option>
+          </select>
+          <button type="submit" class="primary">Add</button>
+        </form>
+      </section>
+    </div>
+    <p id="error" class="error" hidden></p>
+    <ul id="list"></ul>
+  </main>
   <script>
     const form = document.getElementById('form');
     const input = document.getElementById('input');
