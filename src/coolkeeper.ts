@@ -40,7 +40,7 @@ export class CoolKeeper {
 
       console.log({ body })
 
-      const res = await fetch(`${this.url}/api/reports`, {
+      const res = await fetch(`${this.url}/api/v1/errors`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
